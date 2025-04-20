@@ -1,0 +1,41 @@
+name: Build libavif DLL (Windows)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-windows-dll:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
+      - name: Install NASM
+        run: choco install nasm -y
+
+      - name: Configure CMake (DLL)
+        run: |
+          cmake -S . -B build-shared -G Ninja -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DAVIF_LIBYUV=LOCAL -DAVIF_CODEC_AOM=LOCAL
+
+      - name: Build DLL
+        run: |
+          cmake --build build-shared --config Release --parallel
+
+      - name: Upload DLL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libavif-dll
+          path: |
+            build-shared/**/*.dll
+            build-shared/**/*.lib
+            build-shared/**/*.pdbs
