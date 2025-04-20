@@ -13,6 +13,9 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        # 如果你的 libavif fork 依赖特定的外部子模块 (ext)，可能需要添加 submodules: true
+        # with:
+        #   submodules: true # 取消注释，如果需要子模块
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -23,9 +26,19 @@ jobs:
       - name: Install NASM
         run: choco install nasm -y
 
+      - name: Add NASM to PATH
+        run: echo "C:\Program Files\NASM" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: pwsh
+
       - name: Configure CMake (DLL)
         run: |
-          cmake -S . -B build-shared -G Ninja -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DAVIF_LIBYUV=LOCAL -DAVIF_CODEC_AOM=LOCAL
+          cmake -S . -B build-shared -G Ninja `
+            -DBUILD_SHARED_LIBS=ON `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DAVIF_LIBYUV=LOCAL `
+            -DAVIF_CODEC_AOM=LOCAL
+        # -DAVIF_CODEC_RAV1E=LOCAL `
+        # -DAVIF_CODEC_SVT=LOCAL
 
       - name: Build DLL
         run: |
@@ -34,8 +47,8 @@ jobs:
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:
-          name: libavif-dll
+          name: libavif-dll-windows
           path: |
             build-shared/**/*.dll
             build-shared/**/*.lib
-            build-shared/**/*.pdbs
+            build-shared/**/*.pdb
