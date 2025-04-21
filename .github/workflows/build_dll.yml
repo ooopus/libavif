@@ -37,8 +37,9 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release `
             -DAVIF_LIBYUV=LOCAL `
             -DAVIF_CODEC_AOM=LOCAL `
-            -DAVIF_CODEC_RAV1E=LOCAL
-        # -DAVIF_CODEC_SVT=LOCAL
+            -DAVIF_CODEC_RAV1E=LOCAL `
+            -DAVIF_CODEC_RAV1=LOCAL `
+            -DAVIF_CODEC_SVT=LOCAL
 
       - name: Build DLL
         run: |
@@ -50,5 +51,5 @@ jobs:
           name: libavif-dll-windows
           path: |
             build-shared/**/*.dll
-            build-shared/**/*.lib
-            build-shared/**/*.pdb
+          # build-shared/**/*.lib
+          # build-shared/**/*.pdb
