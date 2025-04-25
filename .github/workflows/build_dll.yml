@@ -37,9 +37,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release `
             -DAVIF_LIBYUV=LOCAL `
             -DAVIF_CODEC_AOM=LOCAL `
-            -DAVIF_CODEC_RAV1E=LOCAL `
-            -DAVIF_CODEC_RAV1=LOCAL `
-            -DAVIF_CODEC_SVT=LOCAL
+            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
 
       - name: Build DLL
         run: |
